@@ -1,10 +1,20 @@
+require('dotenv').config({ path: '.env.test' }); // Load test env variables
 const { Client } = require('pg');
 
 async function setupTestDatabase() {
+  console.log('Setting up test database with the following configuration:');
+  console.log({
+    host: process.env.TEST_DB_HOST || 'localhost',
+    port: process.env.TEST_DB_PORT || '30000',
+    user: process.env.TEST_DB_USERNAME || 'postgres',
+    password: process.env.TEST_DB_PASSWORD || 'postgres',
+    database: 'postgres', // Connect to default database first
+  });
+
   // Connect to default postgres database to create test database
   const client = new Client({
     host: process.env.TEST_DB_HOST || 'localhost',
-    port: process.env.TEST_DB_PORT || 5432,
+    port: parseInt(process.env.TEST_DB_PORT || '30000', 10), // Default to 30000
     user: process.env.TEST_DB_USERNAME || 'postgres',
     password: process.env.TEST_DB_PASSWORD || 'postgres',
     database: 'postgres',
@@ -12,6 +22,7 @@ async function setupTestDatabase() {
 
   try {
     await client.connect();
+    console.log('Successfully connected to PostgreSQL');
 
     // Check if test database exists
     const dbCheckResult = await client.query(

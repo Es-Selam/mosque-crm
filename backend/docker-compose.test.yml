@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  postgres_test:
+    image: postgres:14
+    ports:
+      - "30000:5432"  # Use your preferred port mapping
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: mosque_crm_test
+    volumes:
+      - postgres_test_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_test_data:
