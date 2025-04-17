@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import configuration from './config/configuration';
 import { validationSchema } from './config/validation.schema';
 import { getTypeOrmConfig } from './config/typeorm.config';
+import { TenantsModule } from './tenants/tenants.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { getTypeOrmConfig } from './config/typeorm.config';
       inject: [ConfigService],
       useFactory: getTypeOrmConfig,
     }),
+    TenantsModule,
     // Add your other modules here
   ],
   controllers: [AppController],
