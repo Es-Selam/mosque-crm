@@ -7,7 +7,7 @@ import { DataSource } from 'typeorm';
 export class TenantMiddleware implements NestMiddleware {
   constructor(
     private readonly tenantService: TenantsService,
-    private readonly connection: DataSource,
+    private readonly dataSource: DataSource,
   ) {}
 
   async use(req: Request, res: Response, next: NextFunction) {
@@ -15,13 +15,13 @@ export class TenantMiddleware implements NestMiddleware {
     const tenantId = await this.tenantService.getTenantIdFromHostname(hostname);
 
     if (!tenantId) {
-      return next(new NotFoundException('Tenant not found'));
+      throw new NotFoundException('Tenant not found');
     }
 
     req['tenantId'] = tenantId;
 
     // Set PostgreSQL search_path to tenant schema
-    await this.connection.query(`SET search_path TO "mosque_${tenantId}"`);
+    await this.dataSource.query(`SET search_path TO "mosque_${tenantId}"`);
 
     next();
   }
